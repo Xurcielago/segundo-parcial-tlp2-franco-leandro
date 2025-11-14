@@ -2,6 +2,7 @@ import { useState } from "react";
 
 export const useForm = (initialState = {}) => {
   const [formState, setFormState] = useState(initialState);
+  const { username, password } = formState;
 
   const handleChange = (e) => {
     const { name, value } = e.target;

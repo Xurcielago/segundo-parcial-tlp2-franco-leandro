@@ -1,9 +1,41 @@
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
+import { useForm } from "../hooks/useForm.js";
 
 export const LoginPage = () => {
   // TODO: Integrar lógica de autenticación aquí
   // TODO: Implementar useForm para el manejo del formulario
   // TODO: Implementar función handleSubmit
+
+  const { formState, handleChange } = useForm({
+    username: "",
+    password: "",
+  });
+
+  const navigate = useNavigate();
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+
+    const peticion = await fetch("http://localhost:3000/api/login", {
+      method: "POST",
+      body: JSON.stringify(formState),
+      headers: {
+        "Content-type": "application/json",
+      },
+    });
+
+    const data = await peticion.json();
+    if (!peticion.ok) {
+      return alert(data.message);
+    }
+
+    localStorage.setItem("token", data.token);
+    alert(data.message);
+
+    navigate("/home");
+
+    console.log(formState);
+  };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4 py-8">
@@ -20,7 +52,7 @@ export const LoginPage = () => {
           </p>
         </div>
 
-        <form onSubmit={(event) => {}}>
+        <form onSubmit={handleSubmit}>
           <div className="mb-4">
             <label
               htmlFor="username"
@@ -32,6 +64,8 @@ export const LoginPage = () => {
               type="text"
               id="username"
               name="username"
+              value={formState.username}
+              onChange={handleChange}
               placeholder="Ingresa tu usuario"
               className="w-full border border-gray-300 rounded p-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
               required
@@ -49,6 +83,8 @@ export const LoginPage = () => {
               type="password"
               id="password"
               name="password"
+              value={formState.password}
+              onChange={handleChange}
               placeholder="Ingresa tu contraseña"
               className="w-full border border-gray-300 rounded p-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
               required
