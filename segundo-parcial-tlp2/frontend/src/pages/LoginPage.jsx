@@ -22,6 +22,7 @@ export const LoginPage = () => {
       headers: {
         "Content-type": "application/json",
       },
+      credentials: "include",
     });
 
     const data = await peticion.json();
@@ -31,7 +32,6 @@ export const LoginPage = () => {
 
     localStorage.setItem("token", data.token);
     alert(data.message);
-
     navigate("/home");
 
     console.log(formState);
